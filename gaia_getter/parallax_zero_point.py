@@ -14,7 +14,7 @@ def zero_point_calculation_wrapper(df: pd.DataFrame) -> pd.DataFrame:
     """Wrapper code for zero point correction"""
 
     zpt.load_tables()
-    df = df.query("astrometric_params_solved > 3")  # Filter entries that can't be processed
-    df.zpt = df.apply(zpt.zpt_wrapper, axis=1)
+    valid_for_calculation = df.astrometric_params_solved > 3
+    df.loc[valid_for_calculation, "zpt"] = df[valid_for_calculation].apply(zpt.zpt_wrapper, axis=1)
 
     return df
