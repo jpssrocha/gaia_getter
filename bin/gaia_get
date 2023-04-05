@@ -1,0 +1,102 @@
+#!/usr/bin/env python
+"""
+Script to download a single field giving central coordinates via the
+gaia_getter package.
+"""
+# Standard lib
+import argparse
+import logging
+from pathlib import Path
+import asyncio
+
+# 3rth party
+from astropy.coordinates.sky_coordinate import SkyCoord
+from astropy import units as u
+
+# Local
+from gaia_getter.download import gaia_credentials, FieldGeometry, get_gaia_catalog
+from gaia_getter.process import process_gaia_data
+
+
+logging.basicConfig(
+        level=logging.INFO,
+        format="[%(levelname)s] - %(asctime)s - %(name)s - %(message)s"
+)
+
+
+def parse_args():
+
+    parser = argparse.ArgumentParser(
+                prog="gaia_get", 
+                description="Simple tool to download and correct gaia catalog",
+    )
+
+    parser.add_argument(
+            "ra", type=float, 
+            help="RA of the center of the desired field in degrees"
+    )
+
+    parser.add_argument(
+            "dec", type=float,
+            help="DEC of the center of the desired field in degrees"
+    )
+
+    parser.add_argument(
+            "size", type=float,
+            help="Size of the desired field in arcminutes"
+    )
+
+    parser.add_argument(
+            "output", type=str,
+            help="Name of the output file"
+    )
+
+    parser.add_argument(
+            "-cf", "--credentials_path", type=str, default="gaia_credentials.txt",
+            help="path to the file containing gaia credentials"
+    )
+
+    parser.add_argument(
+            "-s", "--square", 
+            action="store_true", help="get a square field with sides equal to the diameter size"
+    )
+
+
+    args = parser.parse_args()
+
+
+    return args.ra, args.dec, args.size, args.credentials_path, args.square, args.output
+
+
+async def main(ra: float, dec: float, size: float, credentials_path: str, square: bool, output: str):
+    """
+    Main routine. Gets the inputs and prepare then to use in obtaining the
+    catalog.
+    """
+
+    # Preparing inputs to use with the auxiliar functions
+    credentials_file = Path(credentials_path)
+    out = Path(output)
+    
+    center = SkyCoord(ra=ra, dec=dec, unit=(u.degree, u.degree), frame='icrs')
+    qsize = u.Quantity(size, u.arcminute)
+    view_geometry = FieldGeometry.CONE if not square else FieldGeometry.SQUARE 
+
+    
+    if credentials_file.exists():
+
+        with gaia_credentials(credentials_file):
+            df = process_gaia_data(await get_gaia_catalog(center, qsize,  view_geometry))
+
+    else:
+        logging.warning(
+                "No credentials file found - the number of rows will be limited"
+        )
+
+        df = process_gaia_data(await get_gaia_catalog(center, qsize,  view_geometry))
+
+    df.to_csv(out.with_suffix(".csv"), index=False)
+
+
+if __name__ == "__main__":
+    asyncio.run(main(*parse_args()))
