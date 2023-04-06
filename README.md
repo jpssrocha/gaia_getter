@@ -123,7 +123,7 @@ with gaia_credentials(gaia_credentials_file):
 ```
 
 Tip 1: For those who doesn't know ... using asyncio can significantly speedup the
-download process (more than 100%). Because it utilizes resources in a better way
+download process (much more than 100%). Because it utilizes resources in a better way
 by doing things concurrently.
 
 Tip 2: Just be aware that the `async.gather` command will collect all returns in
