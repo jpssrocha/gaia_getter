@@ -89,11 +89,25 @@ async def main(ra: float, dec: float, size: float, credentials_path: str, square
             df = process_gaia_data(await get_gaia_catalog(center, qsize,  view_geometry))
 
     else:
-        logging.warning(
-                "No credentials file found - the number of rows will be limited"
-        )
 
-        df = process_gaia_data(await get_gaia_catalog(center, qsize,  view_geometry))
+        print(f"Credentials file ({credentials_path}) not found !!!")
+        choice = input("You wish to continue? [y|n] (default: n): ")
+        continue_ = True if choice.lower() == "y" else False
+
+        if continue_:
+
+            logging.warning(
+                    "No credentials file found - the number of rows will be limited"
+            )
+
+            df = process_gaia_data(await get_gaia_catalog(center, qsize,  view_geometry))
+
+        else:
+            print("Finishing program.")
+            return
+
+
+
 
     df.to_csv(out.with_suffix(".csv"), index=False)
 
