@@ -131,7 +131,7 @@ by doing things concurrently.
 
 Tip 2: Just be aware that the `async.gather` command will collect all returns in
 memory, and this can be a problem if you download too much fields at once. For
-these cases implement a sequential loop on top of it that download a chunk and
+these cases, implement a sequential loop on top of it that download a chunk and
 save the results to disk before going to a second run. So make sure that the
 older results are cleaned from RAM before continuing each loop!
 
