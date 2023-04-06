@@ -39,16 +39,16 @@ the **diameter** of a cone view. For example, to download a field of 1 degree
 around the globular cluster M3 saving to a file named M3.csv with a credentials
 file named `gaia_credentials.txt`:
 
-`$gaia_get 205.55 28.38 60 M3 --credentials-file gaia_credentials.txt`
+`$ gaia_get 205.55 28.38 60 M3 --credentials-file gaia_credentials.txt`
 
 To use without credentials simply do:
 
-`$gaia_get 205.55 28.38 60 M3`
+`$ gaia_get 205.55 28.38 60 M3`
 
 The output with be limited in number of rows. To get a square field with the
 diameter of the cone view as the side length, do:
 
-`$gaia_get 205.55 28.38 60 M3 --credentials-file gaia_credentials.txt -s`
+`$ gaia_get 205.55 28.38 60 M3 --credentials-file gaia_credentials.txt -s`
 
 The result will come as a csv file.
 
