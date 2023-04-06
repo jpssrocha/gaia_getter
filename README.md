@@ -16,7 +16,7 @@ Or, if you prefer to install as a symlink:
 
 `$ pip install -e gaia_getter`
 
-Tip: If you install as a symlink you will be able to alter the code as you with
+Tip: If you install as a symlink you will be able to alter the code as you wish
 and the changes you make will be available to you right away.
 
 # Basic Usage
@@ -155,7 +155,7 @@ processed_catalog = process_gaia_data(dowloaded_data)
 
 # Copyright notices
 
-This code uses code from [Pau Ramos, University of Barcelona](https://gitlab.com/icc-ub/public/gaiadr3_zeropoint/) and 
+This code uses code 'as is' from [Pau Ramos, University of Barcelona](https://gitlab.com/icc-ub/public/gaiadr3_zeropoint/) and 
 [Anthony G.A. Brown, Leiden University](https://github.com/agabrown/gaiaedr3-flux-excess-correction).
 
 # References
