@@ -7,8 +7,11 @@ from other codebase.
 
 # Installation
 
-Clone this repository, activate your virtual environment (if you work with them)
-and run (inside the folder you've cloned it):
+Clone this repository:
+
+`$ git clone https://github.com/jpssrocha/gaia_getter`
+
+Activate your virtual environment (if you work with them) and run (inside the folder you've cloned it):
     
 `$ pip install gaia_getter`
 
