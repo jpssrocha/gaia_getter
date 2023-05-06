@@ -32,6 +32,10 @@ After installing the package a command line tool, `gaia_get`, will become
 available on your environment. The best way to use it is to have an account on
 [ESA](https://cas.cosmos.esa.int/cas/login?service=https%3A%2F%2Ftools.cosmos.esa.int%2Fprivacy%2Findex.php),
 and have a file with the credentials such as [this one](gaia_credentials.txt.example).
+
+**This CLI tool was made to work with small datasets** (~1° wide for a dense field). 
+It won't scale well with large FoV's, because to apply the canonical corrections it loads all the dataset in memory.
+
 To use it simply type:
 
 `$ gaia_get <RA> <DEC> <FIELD_SIZE> <OUTPUT-NAME> --credentials-file <PATH-TO-CREDENTIALS>`
