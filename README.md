@@ -7,8 +7,11 @@ from other codebase.
 
 # Installation
 
-Clone this repository, activate your virtual environment (if you work with them)
-and run (inside the folder you've cloned it):
+Clone this repository:
+
+`$ git clone https://github.com/jpssrocha/gaia_getter`
+
+Activate your virtual environment (if you work with them) and run (inside the folder you've cloned it):
     
 `$ pip install gaia_getter`
 
@@ -16,7 +19,7 @@ Or, if you prefer to install as a symlink:
 
 `$ pip install -e gaia_getter`
 
-Tip: If you install as a symlink you will be able to alter the code as you with
+Tip: If you install as a symlink you will be able to alter the code as you wish
 and the changes you make will be available to you right away.
 
 # Basic Usage
@@ -29,6 +32,10 @@ After installing the package a command line tool, `gaia_get`, will become
 available on your environment. The best way to use it is to have an account on
 [ESA](https://cas.cosmos.esa.int/cas/login?service=https%3A%2F%2Ftools.cosmos.esa.int%2Fprivacy%2Findex.php),
 and have a file with the credentials such as [this one](gaia_credentials.txt.example).
+
+**This CLI tool was made to work with small datasets** (~1° wide for a dense field). 
+It won't scale well with large FoV's, because to apply the canonical corrections it loads all the dataset in memory.
+
 To use it simply type:
 
 `$ gaia_get <RA> <DEC> <FIELD_SIZE> <OUTPUT-NAME> --credentials-file <PATH-TO-CREDENTIALS>`
@@ -39,16 +46,16 @@ the **diameter** of a cone view. For example, to download a field of 1 degree
 around the globular cluster M3 saving to a file named M3.csv with a credentials
 file named `gaia_credentials.txt`:
 
-`$gaia_get 205.55 28.38 60 M3 --credentials-file gaia_credentials.txt`
+`$ gaia_get 205.55 28.38 60 M3 --credentials-file gaia_credentials.txt`
 
 To use without credentials simply do:
 
-`$gaia_get 205.55 28.38 60 M3`
+`$ gaia_get 205.55 28.38 60 M3`
 
 The output with be limited in number of rows. To get a square field with the
 diameter of the cone view as the side length, do:
 
-`$gaia_get 205.55 28.38 60 M3 --credentials-file gaia_credentials.txt -s`
+`$ gaia_get 205.55 28.38 60 M3 --credentials-file gaia_credentials.txt -s`
 
 The result will come as a csv file.
 
@@ -123,12 +130,12 @@ with gaia_credentials(gaia_credentials_file):
 ```
 
 Tip 1: For those who doesn't know ... using asyncio can significantly speedup the
-download process (more than 100%). Because it utilizes resources in a better way
+download process (much more than 100%). Because it utilizes resources in a better way
 by doing things concurrently.
 
 Tip 2: Just be aware that the `async.gather` command will collect all returns in
 memory, and this can be a problem if you download too much fields at once. For
-these cases implement a sequential loop on top of it that download a chunk and
+these cases, implement a sequential loop on top of it that download a chunk and
 save the results to disk before going to a second run. So make sure that the
 older results are cleaned from RAM before continuing each loop!
 
@@ -155,7 +162,7 @@ processed_catalog = process_gaia_data(dowloaded_data)
 
 # Copyright notices
 
-This code uses code from [Pau Ramos, University of Barcelona](https://gitlab.com/icc-ub/public/gaiadr3_zeropoint/) and 
+This code uses code 'as is' from [Pau Ramos, University of Barcelona](https://gitlab.com/icc-ub/public/gaiadr3_zeropoint/) and 
 [Anthony G.A. Brown, Leiden University](https://github.com/agabrown/gaiaedr3-flux-excess-correction).
 
 # References
