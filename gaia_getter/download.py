@@ -12,6 +12,8 @@ import astropy
 from astroquery.gaia import Gaia
 import pandas as pd
 
+from gaia_getter.utils import logger
+
 # Set configuration
 logging.basicConfig(
         level=logging.DEBUG,

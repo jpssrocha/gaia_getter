@@ -9,7 +9,9 @@ Copyright: Pau Ramos, University of Barcelona
 """
 import pandas as pd
 from gaia_getter.zero_point import zpt
+from gaia_getter.utils import logger
 
+@logger
 def zero_point_calculation_wrapper(df: pd.DataFrame) -> pd.DataFrame:
     """Wrapper code for zero point correction"""
 

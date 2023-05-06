@@ -6,6 +6,7 @@ gaia_getter package.
 # Standard lib
 import argparse
 import logging
+from time import perf_counter
 from pathlib import Path
 import asyncio
 
@@ -74,6 +75,8 @@ async def main(ra: float, dec: float, size: float, credentials_path: str, square
     catalog.
     """
 
+    tic = perf_counter()
+
     # Preparing inputs to use with the auxiliar functions
     credentials_file = Path(credentials_path)
     out = Path(output)
@@ -110,6 +113,10 @@ async def main(ra: float, dec: float, size: float, credentials_path: str, square
 
 
     df.to_csv(out.with_suffix(".csv"), index=False)
+
+    toc = perf_counter()
+
+    logging.info(f"Process took: {(toc - tic)/60:.2f} min")
 
 
 if __name__ == "__main__":

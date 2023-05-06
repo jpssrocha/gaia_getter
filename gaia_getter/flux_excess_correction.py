@@ -5,6 +5,8 @@ easily apply to DataFrame on a df.pipe operation.
 import pandas as pd
 import numpy as np
 
+from gaia_getter.utils import logger
+
 
 def correct_flux_excess_factor(bp_rp: np.ndarray, phot_bp_rp_excess_factor: np.ndarray):
     """
@@ -56,6 +58,7 @@ def correct_flux_excess_factor(bp_rp: np.ndarray, phot_bp_rp_excess_factor: np.n
     return phot_bp_rp_excess_factor - correction
 
 
+@logger
 def flux_excess_correction_wrapper(df: pd.DataFrame) -> pd.DataFrame:
     """
     Wrapper function to correct the BP-RP flux given a DataFrame constructed from Gaia DR3
