@@ -17,6 +17,7 @@ def zero_point_calculation_wrapper(df: pd.DataFrame) -> pd.DataFrame:
 
     zpt.load_tables()
     valid_for_calculation = df.astrometric_params_solved > 3
-    df.loc[valid_for_calculation, "zpt"] = df[valid_for_calculation].apply(zpt.zpt_wrapper, axis=1)
+    df.loc[valid_for_calculation, "parallax_zpt"] = df[valid_for_calculation].apply(zpt.zpt_wrapper, axis=1)
+    df.loc[valid_for_calculation, "corrected_parallax"] = df.loc[valid_for_calculation, "parallax"] - df.loc[valid_for_calculation, "parallax_zpt"]
 
     return df
