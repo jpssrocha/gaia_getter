@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="gaia_getter",
-    version="0.1",
+    version="0.2",
     description="simple tool to download and correct gaia data",
     url="https://github.com/jpssrocha/gaia_getter",
     author="João Pedro Rocha",
