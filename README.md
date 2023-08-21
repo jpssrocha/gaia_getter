@@ -1,9 +1,18 @@
 # Gaia Getter
 
-Simple tool to download and correct gaia DR3 catalogs in an easy way based on a
-central location and the field size. It contains a command line script for
-single use catalogs and a function to help download fields programmatically
-from other codebase.
+Simple tool to download and apply 3 corrections to gaia DR3 catalogs in an easy
+way, based on a central location and the field size. It contains a command line
+script for single catalogs, but the package is also organized to work as a
+library so that one can use the components from this package to download many
+fields programatically from other codebases.
+
+The corrections applied are:
+
+- Parallax zero point correction (Lindegren+2020)
+- BP-RP flux excess correction (Riello+2020)
+- Radial velocity correction (Katz+2022 and Bloome+2022)
+
+Each correction will appear as a new columns named: corrected\_<column>.
 
 # Installation
 
@@ -11,7 +20,8 @@ Clone this repository:
 
 `$ git clone https://github.com/jpssrocha/gaia_getter`
 
-Activate your virtual environment (if you work with them) and run (inside the folder you've cloned it):
+Activate your virtual environment (if you work with them) and run (inside the
+folder you've cloned it):
     
 `$ pip install gaia_getter`
 
@@ -33,8 +43,10 @@ available on your environment. The best way to use it is to have an account on
 [ESA](https://cas.cosmos.esa.int/cas/login?service=https%3A%2F%2Ftools.cosmos.esa.int%2Fprivacy%2Findex.php),
 and have a file with the credentials such as [this one](gaia_credentials.txt.example).
 
-**This CLI tool was made to work with small datasets** (<1° wide for a dense field). 
-It won't scale well with large FoV's, because to apply the canonical corrections it loads all the dataset in memory.
+**This CLI tool was made to work with small datasets** (~2° wide for a dense
+field). It won't scale well with large FoV's, because to apply the corrections
+it loads all the dataset in memory, therefore if it's too large it will not be
+able to allocate all the necessary memory.
 
 To use it simply type:
 
@@ -102,7 +114,7 @@ with gaia_credentials(gaia_credentials_file):
     dowloaded_data = await get_gaia_catalog(coord, size)
 ```
 
-To download multiple catalogs assinchronously with login:
+To download multiple catalogs asynchronously with login:
 
 ```python
 import asyncio
@@ -129,18 +141,18 @@ with gaia_credentials(gaia_credentials_file):
     results = await asyncio.gather(*[get_gaia_catalog(*inputs) for inputs in fields])
 ```
 
-Tip 1: For those who doesn't know ... using asyncio can significantly speedup the
-download process (much more than 100%). Because it utilizes resources in a better way
-by doing things concurrently.
+Tip 1: For those who doesn't know ... using asyncio can significantly speedup
+the download process (much more than 100%). Because it utilizes resources in a
+better way by doing things concurrently.
 
-Tip 2: Just be aware that the `async.gather` command will collect all returns in
-memory, and this can be a problem if you download too much fields at once. For
-these cases, implement a sequential loop on top of it that download a chunk and
-save the results to disk before going to a second run. So make sure that the
-older results are cleaned from RAM before continuing each loop!
+Tip 2: Just be aware that the `async.gather` command will collect all returns
+in memory, and this can be a problem if you download too much fields at once.
+For these cases, implement a sequential loop on top of it, that download a
+chunk and save the results to disk before going to a second run. In short: make
+sure that the older results are cleaned from RAM before continuing each loop!
 
-Tip 3: Depending on the environment you run this it will be necessary to wrap all
-the code on an async function and run it using the asyncio.run function:
+Tip 3: Depending on the environment you run this it will be necessary to wrap
+all the code on an async function and run it using the asyncio.run function:
 
 ```python
 
@@ -152,8 +164,8 @@ asyncio.run(main())
 
 ### gaia\_getter.process
 
-Contains just one function that apply the correction on the dowloaded catalogs as
-a pandas DataFrame.
+Contains just one function that apply the corrections on the dowloaded catalogs
+as a pandas DataFrame.
 
 ```python
 from gaia_getter.process import process_gaia_data
@@ -165,11 +177,19 @@ processed_catalog = process_gaia_data(dowloaded_data)
 This code uses code 'as is' from [Pau Ramos, University of Barcelona](https://gitlab.com/icc-ub/public/gaiadr3_zeropoint/) and 
 [Anthony G.A. Brown, Leiden University](https://github.com/agabrown/gaiaedr3-flux-excess-correction).
 
+# Acknowledgements
+
+Thanks Francisco Maia (UFRJ) for sharing the initial directions about the
+canonical corrections, and Mateus Angelo (CEFET) for sharing the recipe for
+radial velocity corrections.
+
 # References
 
 - Gaia Collaboration et al. (2016b) - Gaia mission.
 - Gaia Collaboration et al. (2022k) - Gaia DR3
 - Lindegren et al. (2020) - Zero point estimations
 - Riello et al. (2020) - BP-BR flux excess correction
+- Katz et al. (2022) - Radial velocity correction for colder stars
+- Blomme et al. (2022) - RV correction for hot stars 
 - Ginsburg, Sipőcz, Brasseur et al 2019 - Astroquery
 - Astropy Collaboration (2022) - Astropy
