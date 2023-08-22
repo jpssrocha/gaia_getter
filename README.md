@@ -110,6 +110,8 @@ To use with login:
 ```python
 from gaia_getter.download import get_gaia_catalog, gaia_credentials
 
+gaia_credentials_file = "gaia_credentials.txt"
+
 with gaia_credentials(gaia_credentials_file):
     dowloaded_data = await get_gaia_catalog(coord, size)
 ```
