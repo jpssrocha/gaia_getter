@@ -102,7 +102,7 @@ Then to use it with the library without login:
 ```python
 from gaia_getter.download import get_gaia_catalog
 
-dowloaded_data = await get_gaia_catalog(coord, size)
+dowloaded_data = get_gaia_catalog(coord, size)
 ```
 
 To use with login:
@@ -113,55 +113,7 @@ from gaia_getter.download import get_gaia_catalog, gaia_credentials
 gaia_credentials_file = "gaia_credentials.txt"
 
 with gaia_credentials(gaia_credentials_file):
-    dowloaded_data = await get_gaia_catalog(coord, size)
-```
-
-To download multiple catalogs asynchronously with login:
-
-```python
-import asyncio
-from gaia_getter.download import get_gaia_catalog, gaia_credentials
-
-# Defining helper to cast input into astropy objects
-def helper(ra, dec, size):
-    coord = SkyCoord(ra=ra, dec=dec, unit=(u.degree, u.degree), frame='icrs')
-    size = u.Quantity(size, u.arcminute)
-    return coord, size
-
-# Defining colection of fields
-fields = [
-    (250, -45, 10),
-    (240, -40, 30),
-    (200, -10, 50)
-
-]
-
-fields = [helper(*field) for field in fields]
-
-
-with gaia_credentials(gaia_credentials_file):
-    results = await asyncio.gather(*[get_gaia_catalog(*inputs) for inputs in fields])
-```
-
-Tip 1: For those who doesn't know ... using asyncio can significantly speedup
-the download process (much more than 100%). Because it utilizes resources in a
-better way by doing things concurrently.
-
-Tip 2: Just be aware that the `async.gather` command will collect all returns
-in memory, and this can be a problem if you download too much fields at once.
-For these cases, implement a sequential loop on top of it, that download a
-chunk and save the results to disk before going to a second run. In short: make
-sure that the older results are cleaned from RAM before continuing each loop!
-
-Tip 3: Depending on the environment you run this it will be necessary to wrap
-all the code on an async function and run it using the asyncio.run function:
-
-```python
-
-async def main():
-    # The code here
-    
-asyncio.run(main())
+    dowloaded_data = get_gaia_catalog(coord, size).get_data()
 ```
 
 ### gaia\_getter.process
@@ -179,9 +131,17 @@ processed_catalog = process_gaia_data(dowloaded_data)
 This code uses code 'as is' from [Pau Ramos, University of Barcelona](https://gitlab.com/icc-ub/public/gaiadr3_zeropoint/) and 
 [Anthony G.A. Brown, Leiden University](https://github.com/agabrown/gaiaedr3-flux-excess-correction).
 
+# On concurrent downloads
+
+The library components of this package were created thinking on letting the downloads be assynchronous, but the astroquery async 
+functions won't do things assynchronously depending on the version. So the functions were readapted to run sequentitally.
+
+To download multiple fields concurrently one can create a custom function using the helpers here and run then concurrently
+using the multithread module (maybe i will add a helper for this here on the future).
+
 # Acknowledgements
 
-Thanks Francisco Maia (UFRJ) for sharing the initial directions about the
+Thanks Francisco Maia (UFRJ) and Raphael Oliveira (IAG) for sharing the initial directions about the
 canonical corrections, and Mateus Angelo (CEFET) for sharing the recipe for
 radial velocity corrections.
 
