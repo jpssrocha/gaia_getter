@@ -133,17 +133,60 @@ This code uses code 'as is' from [Pau Ramos, University of Barcelona](https://gi
 
 # On concurrent downloads
 
-The library components of this package were created thinking on letting the downloads be assynchronous, but the astroquery async 
-functions won't do things assynchronously depending on the version. So the functions were readapted to run sequentitally.
+The library components of this package were created thinking on letting the
+downloads be asynchronous, but the astroquery async functions won't do things
+asynchronously depending on the version. So the functions were re adapted to
+run sequentially.
 
-To download multiple fields concurrently one can create a custom function using the helpers here and run then concurrently
-using the multithread module (maybe i will add a helper for this here on the future).
+Therefore to download multiple fields concurrently one can create a custom
+function using the helpers here and run then concurrently using a ThreadPool
+(present on python by default). Here is a full example on how to use it to 
+download cone fields without applying corrections:
 
-# Acknowledgements
+```python
+from multiprocessing.pool import ThreadPool
+from gaia_getter.download import get_gaia_catalog, gaia_credentials
+import astropy.units as u
+from astropy.coordinates import SkyCoord
 
-Thanks Francisco Maia (UFRJ) and Raphael Oliveira (IAG) for sharing the initial directions about the
-canonical corrections, and Mateus Angelo (CEFET) for sharing the recipe for
-radial velocity corrections.
+def helper(ra, dec, size):
+    """Prepare fields for download"""
+    coord = SkyCoord(ra=ra, dec=dec, unit=(u.degree, u.degree), frame='icrs')
+    size = u.Quantity(size, u.arcminute)
+    return coord, size
+
+
+# Defining a colection of 10 fields
+fields = [(250, -46 + i, 2) for i in range(10)] 
+
+fields = [helper(*field) for field in fields]
+
+gaia_credentials_file = "gaia_credentials.txt"
+
+with gaia_credentials(gaia_credentials_file):
+    tic = perf_counter()
+
+    with ThreadPool(processes=10) as p:
+        res = p.starmap_async(get_gaia_catalog, fields)
+
+        res = [r.get() for r in res]
+
+```
+
+This script downloaded fields on my computer (and internet) about 20-30x faster
+than sequentially.
+
+Tip: Just be aware that the last command will collect all returns
+in memory, and this can be a problem if you download too much fields at once.
+For these cases, implement a sequential loop on top of it, that download a
+chunk and save the results to disk before going to a second run. In short: make
+sure that the older results are cleaned from RAM before continuing!
+
+# Acknowledgments
+
+Thanks Francisco Maia (UFRJ) and Raphael Oliveira (IAG) for sharing the initial
+directions about the canonical corrections, and Mateus Angelo (CEFET) for
+sharing the recipe for radial velocity corrections.
 
 # References
 
