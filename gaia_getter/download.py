@@ -11,12 +11,11 @@ from enum import Enum
 import astropy
 from astroquery.gaia import Gaia
 import pandas as pd
-
-from gaia_getter.utils import logger
+# from astroquery.utils.tap.model.job import Job
 
 # Set configuration
 logging.basicConfig(
-        level=logging.DEBUG,
+        level=logging.INFO,
         format="[%(levelname)s] - %(asctime)s - %(name)s - %(message)s"
 )
 
@@ -39,7 +38,7 @@ def gaia_credentials(credentials_file: str | Path = "gaia_credentials.txt") -> G
         Gaia.logout()
 
 
-async def get_gaia_catalog(
+def get_gaia_catalog(
     center_coord: astropy.coordinates.SkyCoord,
     size: astropy.units.Quantity,
     field_geometry: FieldGeometry = FieldGeometry.CONE

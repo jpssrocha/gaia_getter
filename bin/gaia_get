@@ -89,7 +89,9 @@ async def main(ra: float, dec: float, size: float, credentials_path: str, square
     if credentials_file.exists():
 
         with gaia_credentials(credentials_file):
-            df = process_gaia_data(await get_gaia_catalog(center, qsize,  view_geometry))
+            # df = process_gaia_data((await get_gaia_catalog(center, qsize,  view_geometry).get_results().to_pandas()))
+            df = get_gaia_catalog(center, qsize,  view_geometry)
+            df = process_gaia_data(df)
 
     else:
 
@@ -103,12 +105,12 @@ async def main(ra: float, dec: float, size: float, credentials_path: str, square
                     "No credentials file found - the number of rows will be limited"
             )
 
-            df = process_gaia_data(await get_gaia_catalog(center, qsize,  view_geometry))
+            df = get_gaia_catalog(center, qsize,  view_geometry)
+            df = process_gaia_data(df)
 
         else:
             print("Finishing program.")
             return
-
 
 
 
