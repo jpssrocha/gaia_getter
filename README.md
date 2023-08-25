@@ -84,7 +84,7 @@ To download gaia data there are 3 important components:
 
 - FieldGeometry: enum with the options for field geometries
 - gaia\_credentials: a context manager to handle the login to the gaia server 
-- get\_gaia\_catalog: function to download data (it's async)
+- get\_gaia\_catalog: function to download data
 
 To download fields first you need to represent then using astropy objects:
 
