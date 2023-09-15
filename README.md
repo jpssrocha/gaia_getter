@@ -164,12 +164,11 @@ fields = [helper(*field) for field in fields]
 gaia_credentials_file = "gaia_credentials.txt"
 
 with gaia_credentials(gaia_credentials_file):
-    tic = perf_counter()
 
     with ThreadPool(processes=10) as p:
         res = p.starmap_async(get_gaia_catalog, fields)
 
-        res = [r.get() for r in res]
+        res = [r for r in res.get()]
 
 ```
 
